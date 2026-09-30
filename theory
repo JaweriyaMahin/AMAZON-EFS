@@ -1,6 +1,7 @@
-Amazon EFS — Theory for AWS Cloud/DevOps Fresher
+Amazon EFS — 
 
-Amazon Web Services EFS (Elastic File System) is a managed, scalable file storage service in AWS that allows multiple servers, such as EC2 instances, to access the same files simultaneously over the network.
+Amazon Web Services EFS (Elastic File System) is a managed, scalable file storage 
+service in AWS that allows multiple servers, such as EC2 instances, to access the same files simultaneously over the network.
 
 1. What problem does EFS solve?
 
@@ -21,6 +22,7 @@ Server management	Not required
 Typical use	Shared application files
 Availability	Regional
 Linux support	Yes
+
 3. How EFS works
 
 The basic flow is:
@@ -110,7 +112,6 @@ General Purpose = common workloads
 Max I/O = highly parallel workloads
 
 7. Throughput Modes
-
 EFS supports different ways of providing throughput, including:
 
 Elastic
@@ -149,7 +150,9 @@ EC2 Security Group
        │ TCP 2049
        ▼
 EFS Mount Target Security Group
-IAM
+
+
+## IAM
 
 Can be used with EFS authorization mechanisms, particularly with EFS access points and IAM identity-based authorization.
 
@@ -167,16 +170,7 @@ So EFS access can involve both network-level security and file-level permissions
 
 EFS is designed as a regional file system.
 
-It can provide access across multiple Availability Zones, which makes it useful for highly available applications.
-
-Example:
-
-          Load Balancer
-          /     |     \
-        EC2    EC2    EC2
-         \      |      /
-          \     |     /
-             EFS
+It can provide access across multiple Availability Zones, which makes it useful for highly available application
 
 If one EC2 instance fails, another EC2 instance can continue accessing the shared files.
 
@@ -192,6 +186,7 @@ Container workloads
 Shared configuration/data
 Home directories
 Applications running across multiple EC2 instances
+
 Example: WordPress
 
 Suppose:
