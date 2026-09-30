@@ -6,16 +6,6 @@ Amazon Web Services EFS (Elastic File System) is a managed, scalable file storag
 
 Suppose you have multiple EC2 instances running an application:
 
-          ┌── EC2-1 ──┐
-          │            │
-Users → Load Balancer → EC2-2
-          │            │
-          └── EC2-3 ──┘
-                 │
-                 ▼
-              Amazon EFS
-             Shared Files
-
 If files are stored only on one EC2 instance, other instances may not have access to them.
 
 EFS provides shared storage, so all EC2 instances can access the same files.
@@ -56,44 +46,7 @@ rm
 
 The important difference is that the data is stored in EFS, not on the EC2 instance's local filesystem.
 
-4. EFS vs EBS
-
-This is a very common interview question.
-
-EFS	EBS
-File storage	Block storage
-Can be shared by multiple EC2 instances	Usually attached to one EC2 at a time
-Uses NFS	Attached as a block device
-Automatically scales	Provisioned volume size
-Regional	AZ-specific
-Good for shared files	Good for OS/application/database disks
-Simple example
-
-EBS:
-
-EC2 → EBS
-
-EFS:
-
-EC2-1 ─┐
-EC2-2 ─┼──→ EFS
-EC2-3 ─┘
-5. EFS vs S3
-
-Another important interview comparison:
-
-EFS	S3
-File storage	Object storage
-Mounted as filesystem	Accessed through API/SDK/HTTP
-Uses NFS	Uses S3 API
-Designed for file-based workloads	Designed for objects/files
-Good for shared application filesystem	Good for backups, images, logs, static files
-
-For example:
-
-Shared WordPress files → EFS
-Website images/backups → S3
-6. EFS Components
+4. EFS Components
 File System
 
 The main EFS storage resource where your files are stored.
@@ -124,25 +77,22 @@ File permissions
 
 Useful when different applications need controlled access to the same EFS filesystem.
 
-7. EFS Storage Classes
+5. EFS Storage Classes
 
 EFS provides different storage classes based on access frequency.
 
 EFS Standard
-
 For frequently accessed files.
 
 EFS Infrequent Access — EFS IA
-
 For files that are accessed less frequently and can help reduce storage cost.
 
 EFS Archive
-
 For very rarely accessed files where lower storage cost is important.
 
 EFS can use Lifecycle Management to automatically move files between storage classes based on access patterns.
 
-8. EFS Performance Modes
+6. EFS Performance Modes
 
 Two important performance modes:
 
@@ -159,7 +109,7 @@ For a fresher interview, remember:
 General Purpose = common workloads
 Max I/O = highly parallel workloads
 
-9. Throughput Modes
+7. Throughput Modes
 
 EFS supports different ways of providing throughput, including:
 
@@ -178,7 +128,7 @@ Bursting
 
 Throughput can increase temporarily based on the filesystem's storage and workload characteristics.
 
-10. Security
+8. Security
 
 EFS security is important because EC2 accesses it through the network.
 
@@ -213,7 +163,7 @@ others
 
 So EFS access can involve both network-level security and file-level permissions.
 
-11. Availability and Durability
+9. Availability and Durability
 
 EFS is designed as a regional file system.
 
@@ -230,7 +180,7 @@ Example:
 
 If one EC2 instance fails, another EC2 instance can continue accessing the shared files.
 
-12. Common Real-World Uses
+10. Common Real-World Uses
 
 EFS is commonly useful for:
 
