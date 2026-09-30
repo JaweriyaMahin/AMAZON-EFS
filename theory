@@ -1,0 +1,261 @@
+Amazon EFS — Theory for AWS Cloud/DevOps Fresher
+
+Amazon Web Services EFS (Elastic File System) is a managed, scalable file storage service in AWS that allows multiple servers, such as EC2 instances, to access the same files simultaneously over the network.
+
+1. What problem does EFS solve?
+
+Suppose you have multiple EC2 instances running an application:
+
+          ┌── EC2-1 ──┐
+          │            │
+Users → Load Balancer → EC2-2
+          │            │
+          └── EC2-3 ──┘
+                 │
+                 ▼
+              Amazon EFS
+             Shared Files
+
+If files are stored only on one EC2 instance, other instances may not have access to them.
+
+EFS provides shared storage, so all EC2 instances can access the same files.
+
+2. Key characteristics
+Feature	EFS
+Storage type	File storage
+Access protocol	NFS
+Scalability	Automatically grows/shrinks
+Multiple EC2 access	Yes
+Managed by AWS	Yes
+Server management	Not required
+Typical use	Shared application files
+Availability	Regional
+Linux support	Yes
+3. How EFS works
+
+The basic flow is:
+
+EC2 Instance
+     │
+     │ NFS
+     ▼
+EFS Mount Target
+     │
+     ▼
+EFS File System
+
+An EC2 instance mounts EFS like a normal filesystem.
+
+After mounting, the application can work with files using normal Linux commands:
+
+ls
+cd
+mkdir
+cp
+rm
+
+The important difference is that the data is stored in EFS, not on the EC2 instance's local filesystem.
+
+4. EFS vs EBS
+
+This is a very common interview question.
+
+EFS	EBS
+File storage	Block storage
+Can be shared by multiple EC2 instances	Usually attached to one EC2 at a time
+Uses NFS	Attached as a block device
+Automatically scales	Provisioned volume size
+Regional	AZ-specific
+Good for shared files	Good for OS/application/database disks
+Simple example
+
+EBS:
+
+EC2 → EBS
+
+EFS:
+
+EC2-1 ─┐
+EC2-2 ─┼──→ EFS
+EC2-3 ─┘
+5. EFS vs S3
+
+Another important interview comparison:
+
+EFS	S3
+File storage	Object storage
+Mounted as filesystem	Accessed through API/SDK/HTTP
+Uses NFS	Uses S3 API
+Designed for file-based workloads	Designed for objects/files
+Good for shared application filesystem	Good for backups, images, logs, static files
+
+For example:
+
+Shared WordPress files → EFS
+Website images/backups → S3
+6. EFS Components
+File System
+
+The main EFS storage resource where your files are stored.
+
+Mount Target
+
+A network endpoint through which an EC2 instance accesses EFS.
+
+EC2
+ │
+ ▼
+Mount Target
+ │
+ ▼
+EFS
+
+Mount targets are associated with Availability Zones/subnets.
+
+Access Point
+
+An application-specific entry point into EFS.
+
+It can help control:
+
+Root directory
+POSIX user/group
+File permissions
+
+Useful when different applications need controlled access to the same EFS filesystem.
+
+7. EFS Storage Classes
+
+EFS provides different storage classes based on access frequency.
+
+EFS Standard
+
+For frequently accessed files.
+
+EFS Infrequent Access — EFS IA
+
+For files that are accessed less frequently and can help reduce storage cost.
+
+EFS Archive
+
+For very rarely accessed files where lower storage cost is important.
+
+EFS can use Lifecycle Management to automatically move files between storage classes based on access patterns.
+
+8. EFS Performance Modes
+
+Two important performance modes:
+
+General Purpose
+
+Designed for most applications and is the normal choice for many workloads.
+
+Max I/O
+
+Designed for workloads requiring very high levels of parallelism, with a trade-off in latency.
+
+For a fresher interview, remember:
+
+General Purpose = common workloads
+Max I/O = highly parallel workloads
+
+9. Throughput Modes
+
+EFS supports different ways of providing throughput, including:
+
+Elastic
+Provisioned
+Bursting
+Elastic
+
+Throughput automatically scales based on workload.
+
+Provisioned
+
+You specify the throughput you need independently of the amount of data stored.
+
+Bursting
+
+Throughput can increase temporarily based on the filesystem's storage and workload characteristics.
+
+10. Security
+
+EFS security is important because EC2 accesses it through the network.
+
+Main things involved:
+
+Security Groups
+
+Control network traffic to the EFS mount target.
+
+For NFS, the important port is:
+
+TCP 2049
+
+Typical flow:
+
+EC2 Security Group
+       │
+       │ TCP 2049
+       ▼
+EFS Mount Target Security Group
+IAM
+
+Can be used with EFS authorization mechanisms, particularly with EFS access points and IAM identity-based authorization.
+
+POSIX permissions
+
+Linux file permissions also control access:
+
+owner
+group
+others
+
+So EFS access can involve both network-level security and file-level permissions.
+
+11. Availability and Durability
+
+EFS is designed as a regional file system.
+
+It can provide access across multiple Availability Zones, which makes it useful for highly available applications.
+
+Example:
+
+          Load Balancer
+          /     |     \
+        EC2    EC2    EC2
+         \      |      /
+          \     |     /
+             EFS
+
+If one EC2 instance fails, another EC2 instance can continue accessing the shared files.
+
+12. Common Real-World Uses
+
+EFS is commonly useful for:
+
+Shared application files
+Web servers
+WordPress shared files
+Content management systems
+Container workloads
+Shared configuration/data
+Home directories
+Applications running across multiple EC2 instances
+Example: WordPress
+
+Suppose:
+
+EC2-1 → WordPress
+EC2-2 → WordPress
+EC2-3 → WordPress
+
+All three instances may need access to the same uploaded media.
+
+Instead of keeping those files separately on each EC2:
+
+EC2-1 ─┐
+EC2-2 ─┼──→ EFS → WordPress files
+EC2-3 ─┘
+
+Now all instances can access the shared files.
