@@ -20,7 +20,7 @@ EC2-1 ──┐
 EC2-2 ──┘
 
 ## Configuration
-- OS: Amazon Linux 2023
+- OS: Amazon Linux 
 - EFS Mount Point: `/mnt/efs`
 - NFS Port: `2049`
 - Two EC2 instances connected to the same EFS
